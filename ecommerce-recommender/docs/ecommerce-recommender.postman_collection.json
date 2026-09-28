@@ -1,0 +1,107 @@
+{
+  "info": {
+    "_postman_id": "a4c376ab-5a68-4da3-b54d-8299fd42cd51",
+    "name": "AI E-Commerce Recommender",
+    "description": "End-to-end requests for the Express API and FastAPI recommendation service.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "apiBase", "value": "http://localhost:5000/api" },
+    { "key": "mlBase", "value": "http://localhost:8000" },
+    { "key": "userId", "value": "87afcb89-b77a-4f79-8e89-832f817244da" },
+    { "key": "productId", "value": "wrk-001" }
+  ],
+  "item": [
+    {
+      "name": "Express API",
+      "item": [
+        {
+          "name": "Health",
+          "request": { "method": "GET", "url": "{{apiBase}}/health" }
+        },
+        {
+          "name": "List all products",
+          "request": { "method": "GET", "url": "{{apiBase}}/products" }
+        },
+        {
+          "name": "Filter and search products",
+          "request": {
+            "method": "GET",
+            "url": "{{apiBase}}/products?category=laptops&search=gaming"
+          }
+        },
+        {
+          "name": "Get product",
+          "request": { "method": "GET", "url": "{{apiBase}}/products/{{productId}}" }
+        },
+        {
+          "name": "Get similar products",
+          "request": { "method": "GET", "url": "{{apiBase}}/products/{{productId}}/similar?limit=4" }
+        },
+        {
+          "name": "Record interaction",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"productId\": \"{{productId}}\",\n  \"type\": \"view\"\n}"
+            },
+            "url": "{{apiBase}}/interactions"
+          }
+        },
+        {
+          "name": "Get user activity",
+          "request": { "method": "GET", "url": "{{apiBase}}/interactions/{{userId}}" }
+        },
+        {
+          "name": "Get user recommendations",
+          "request": { "method": "GET", "url": "{{apiBase}}/recommendations/{{userId}}?limit=8" }
+        },
+        {
+          "name": "Recommend from an idea",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"idea\": \"warm bedroom makeover with storage and soft lighting\",\n  \"limit\": 8\n}" },
+            "url": "{{apiBase}}/recommendations/idea"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ML Service",
+      "item": [
+        {
+          "name": "Health",
+          "request": { "method": "GET", "url": "{{mlBase}}/health" }
+        },
+        {
+          "name": "Similar products",
+          "request": { "method": "GET", "url": "{{mlBase}}/similar/{{productId}}?limit=5" }
+        },
+        {
+          "name": "Recommend from history",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"viewedProductIds\": [\"lap-001\", \"key-001\", \"mou-001\"],\n  \"limit\": 6\n}"
+            },
+            "url": "{{mlBase}}/recommend"
+          }
+        },
+        {
+          "name": "Cold-start recommendations",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"viewedProductIds\": [],\n  \"limit\": 6\n}" },
+            "url": "{{mlBase}}/recommend"
+          }
+        }
+      ]
+    }
+  ]
+}
